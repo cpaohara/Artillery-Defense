@@ -1,4 +1,4 @@
-import { UpdateElevation, DrawCannon } from "/Cannon.js";
+import { UpdateElevation, DrawCannon, FireCannon, UpdateProjectiles, DrawProjectiles } from "/Cannon.js";
 
 //Context and Canvas//
 const canvas = document.getElementById('screen');
@@ -18,7 +18,8 @@ function Frame(){
 
     UpdateElevation();
     DrawCannon();
-
+    UpdateProjectiles();
+    DrawProjectiles();
     requestAnimationFrame(Frame);
 }
 

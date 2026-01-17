@@ -11,15 +11,17 @@ let up = false;
 let down = false;
 let activeExplosions = [];  //{x, y, radius, alpha}
 let activeProjectiles = []; //{x, y, xspeed, yspeed, termVel}
-const gravity = 2
+const gravity = 0.1;
 let barrelLength = 60
 let secondBarrel = 45
 const maxElevation = 1.22;
 const minElevation = 0.17
+let shellType = 'kinetic' //HE, AP, kinetic, tracer
+const shellSpeeds = {kinetic: 10, HE: 15, AP: 50, tracer: 10};
+const tVelocity = {kinetic: 5, HE: 15, AP: 20, tracer: 5};
 //ADD MASS LATER//
 
 function UpdateElevation(){
-
 
     if(up){
         elevationAngle += 0.01;
@@ -57,51 +59,67 @@ function DrawCannon(){
     ctx.lineTo(secondBarrel, 0);
     ctx.stroke();
     ctx.restore();
-    console.log(elevationAngle, barrelLength);
 }
 
 function FireCannon(){
 
     let x = (50 + Math.cos(elevationAngle) * barrelLength);
-    let y = (50 + Math.cos(elevationAngle) * barrelLength);
+    let y = (380 - Math.sin(elevationAngle) * barrelLength);
 
-    // ctx.save();
-    // ctx.translate(50, 380);
-    // ctx.rotate(2*Math.PI - elevationAngle);
-    // ctx.beginPath();
-    // ctx.moveTo(0, 0);
+    // ctx.beginPath();     Check proj starts at end of barrel
+    // ctx.arc(x, y, 5, 0, 2*Math.PI);
+    // ctx.stroke();
 
-    activeProjectiles.push(
-        {x, y, }
-    )
+    switch(shellType){
+        case 'kinetic': //speed = 20 termVel = 10
+            activeProjectiles.push(
+            {x, y, xSpeed: shellSpeeds.kinetic * Math.cos(elevationAngle), ySpeed: shellSpeeds.kinetic * Math.sin(elevationAngle), termVel: tVelocity.kinetic}
+            )
+            break;
+        case 'HE': //speed = 15 termVel = 25
+            activeProjectiles.push(
+            {x, y, xSpeed: shellSpeeds.HE * Math.cos(elevationAngle), ySpeed: shellSpeeds.HE * Math.sin(elevationAngle), termVel: tVelocity.HE}
+            )
+            break;
+        case 'AP': //speed = 50 termVel = 20
+            activeProjectiles.push(
+            {x, y, xSpeed: shellSpeeds.AP * Math.cos(elevationAngle), ySpeed: shellSpeeds.AP * Math.sin(elevationAngle), termVel: tVelocity.AP}
+            )
+            break;
+        case 'tracer': //speed = 20 termVel = 10
+            activeProjectiles.push(
+            {x, y, xSpeed: shellSpeeds.tracer * Math.cos(elevationAngle), ySpeed: shellSpeeds.tracer * Math.sin(elevationAngle), termVel: tVelocity.tracer}
+            )
+            break;
+    }
 }
 
+// add flag on activeprojectiles that turns true whem hit ground
+// dont display proj when true
+// to stop super long list, reset list when all items in the list have hit the ground
+// 
 
+function UpdateProjectiles(){
+    for(const projectile of activeProjectiles){
 
+        // if(projectile.y > 400){
+        //     activeProjectiles.splice(projectile);
+        // }
 
+        projectile.x += projectile.xSpeed;
+        projectile.y -= projectile.ySpeed;
+        projectile.ySpeed -= gravity; //Slow vertical speed thru gravity
+    }
+}
 
-
-
-
-    // ctx.save
-    // ctx.beginPath();
-    // ctx.moveTo(50, 380);
-    // ctx.lineWidth = 5;
-    // ctx.lineTo((50 + Math.cos(elevationAngle) * barrelLength), (380 - Math.sin(elevationAngle) * barrelLength)) // (50 + x, 400 + y)
-    // ctx.stroke()
-    // ctx.beginPath();
-    // ctx.moveTo(50, 380);
-    // ctx.lineWidth = 10;
-    // ctx.lineTo((50 + Math.cos(elevationAngle) * secondBarrel), (380 - Math.sin(elevationAngle) * secondBarrel)) // (50 + x, 400 + y)
-    // ctx.stroke();
-    // ctx.closePath();
-    // // ctx.translate(50, 380)
-    // // ctx.rotate((elevationAngle));
-    // // ctx.lineTo(50 + barrelLength, 380)
-    // // ctx.resetTransform();
-    
-
-
+function DrawProjectiles(){
+    for(const projectile of activeProjectiles){
+        ctx.beginPath();
+        ctx.fillStyle = 'gray';
+        ctx.arc(projectile.x, projectile.y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
 
 window.addEventListener('keydown', ev =>{
     switch(ev.key){
@@ -128,4 +146,22 @@ window.addEventListener('keyup', ev =>{
     }
 })
 
-export {UpdateElevation, DrawCannon};
+export {UpdateElevation, DrawCannon, FireCannon, UpdateProjectiles, DrawProjectiles};
+
+
+// ctx.save
+// ctx.beginPath();
+// ctx.moveTo(50, 380);
+// ctx.lineWidth = 5;
+// ctx.lineTo((50 + Math.Math.cos(elevationAngle) * barrelLength), (380 - Math.sin(elevationAngle) * barrelLength)) // (50 + x, 400 + y)
+// ctx.stroke()
+// ctx.beginPath();
+// ctx.moveTo(50, 380);
+// ctx.lineWidth = 10;
+// ctx.lineTo((50 + Math.Math.cos(elevationAngle) * secondBarrel), (380 - Math.sin(elevationAngle) * secondBarrel)) // (50 + x, 400 + y)
+// ctx.stroke();
+// ctx.closePath();
+// // ctx.translate(50, 380)
+// // ctx.rotate((elevationAngle));
+// // ctx.lineTo(50 + barrelLength, 380)
+// // ctx.resetTransform();
