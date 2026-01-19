@@ -1,13 +1,14 @@
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
 const gravity = 0.1;
-let activeExplosions = [];  //{x, y, radius, alpha}
+let activeExplosions = [];  //{x, y, radius(5), alpha}
+let tracerPlots = [];   //{x, y, radius(2), timer(500), alpha, alphaDecrease(0.05)}
+const tracerMax = 20;
 const explosionSpeed = 2;
 const fadeSpeed = 0.05; //use 0.1??
-let activeProjectiles = []; //{x, y, xspeed, yspeed, termVel, ground}
-let shellType = 'kinetic' //HE, AP, kinetic, tracer
-// const shellSpeeds = {kinetic: 10, HE: 15, AP: 50, tracer: 10};
-// const tVelocity = {kinetic: 5, HE: 15, AP: 20, tracer: 5};
+let activeProjectiles = []; //{x, y, xspeed, yspeed, termVel, ground, delay(tracer only)}   radius assigned in ctx.arc -> radius = 5
+let shellTypes = ['Kinetic', 'HE', 'AP', 'Tracer']; //HE, AP, kinetic, tracer
+let currentshell = 3;
 const shellData = {kinetic: {speed: 10, tVel: 5}, HE: {speed: 7, tVel: 7}, AP: {speed: 20, tVel: 7}, tracer: {speed: 10, tVel: 5}};
 //ADD MASS LATER//
 
@@ -18,33 +19,38 @@ function FireCannon(elevationAngle, barrelLength){
 
     let xSpeed;
     let ySpeed;
-    let termVel
+    let termVel;
+    let shell;
 
-    switch(shellType){
-        case 'kinetic':
+    switch(shellTypes[currentshell]){
+        case 'Kinetic':
             xSpeed = shellData.kinetic.speed * Math.cos(elevationAngle);
             ySpeed = shellData.kinetic.speed * Math.sin(elevationAngle);
             termVel = shellData.kinetic.tVel;
+            shell = 'kinetic';
             break;
         case 'HE':
             xSpeed = shellData.HE.speed * Math.cos(elevationAngle);
             ySpeed = shellData.HE.speed * Math.sin(elevationAngle);
             termVel = shellData.HE.tVel;
+            shell = 'HE';
             break;
         case 'AP':
             xSpeed = shellData.AP.speed * Math.cos(elevationAngle);
             ySpeed = shellData.AP.speed * Math.sin(elevationAngle);
             termVel = shellData.AP.tVel;
+            shell = 'AP';
             break;
-        case 'tracer':
+        case 'Tracer':
             xSpeed = shellData.tracer.speed * Math.cos(elevationAngle);
             ySpeed = shellData.tracer.speed * Math.sin(elevationAngle);
             termVel = shellData.tracer.tVel;
+            shell = 'tracer';
             break;
     }
 
     activeProjectiles.push(
-        {x, y, xSpeed, ySpeed, termVel, ground: false}
+        {shell, x, y, xSpeed, ySpeed, termVel, ground: false, delay: 20} //only tracer uses delay
     )
 }
 
@@ -63,6 +69,14 @@ function UpdateProjectiles(){
         projectile.x += projectile.xSpeed;
         projectile.y -= projectile.ySpeed;
         projectile.ySpeed -= gravity; //Slow vertical speed thru gravity
+
+        if(projectile.shell == 'tracer' && projectile.delay <= 0 && projectile.ground == false){
+            tracerPlots.push({x: projectile.x, y: projectile.y, radius: 2, timer: 500, alpha: 1, alphaDecrease: 0.05, finished: false});
+            projectile.delay = tracerMax;
+        }
+        else{
+            projectile.delay -= 1;
+        }
     }
 }
 
@@ -99,19 +113,39 @@ function DrawExplosions(){
     }
 }
 
+function UpdateTracers(){
+    for(const point of tracerPlots){ //{x, y, radius(2), timer(500), alpha, alphaDecrease(0.05)}
+        if(point.alpha <= 0 && point.finished == false){
+            point.finished = true;
+        }
+        if(point.timer > 0){
+            point.timer -= 1;
+        }
+        else{
+            point.alpha -= point.alphaDecrease
+        }
+    }
+}
+
+function DrawTracers(){
+    for(const point of tracerPlots){
+        ctx.fillStyle = `rbga(200, 0, 0, ${point.alpha})`;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 2, 0, 2*Math.PI);
+    }
+}
+
+function GetShellType(){
+    return shellTypes[currentshell];
+}
+
 function ProjectileControl(){
     UpdateProjectiles();
     DrawProjectiles();
     UpdateExplosions();
     DrawExplosions();
+    UpdateTracers();
+    DrawTracers();
 }
 
-// window.addEventListener('keydown', ev =>{
-//     switch(ev.key){
-//         case ' ':
-//             FireCannon(GetElevation(), GetBarrelLength());
-//             break;
-//     }
-// })
-
-export {ProjectileControl, FireCannon};
+export {ProjectileControl, FireCannon, GetShellType};
