@@ -64,13 +64,16 @@ function FireCannon(elevationAngle, barrelLength){
 
 function UpdateProjectiles(){
     for(const projectile of activeProjectiles){
-        if(projectile.y > 395 && projectile.ground == false && projectile.shell != 'tracer'){
+        if(projectile.y > 395 && projectile.ground == false){
             projectile.ground = true;
+        }
+
+        if(projectile.ground == true && projectile.shell != 'tracer'){
             activeExplosions.push({x: projectile.x, y: projectile.y, radius: 5, alpha: 1, finished: false});
         }
-        else if(projectile.y > 395 && projectile.shell == 'tracer'){
-            projectile.ground = true;
-        }
+        // else if(projectile.ground = true && projectile.shell == 'tracer'){
+        //     projectile.ground = true;
+        // }
 
         projectile.x += projectile.xSpeed;
         projectile.y -= projectile.ySpeed;
@@ -154,6 +157,10 @@ function GetShellType(){
     return shellTypes[currentshell];
 }
 
+function GetPlayerProjectiles(){
+    return activeProjectiles;
+}
+
 function ProjectileControl(){
     UpdateProjectiles();
     DrawProjectiles();
@@ -180,4 +187,4 @@ window.addEventListener('keydown', ev => {
     }
 })
 
-export {ProjectileControl, FireCannon, GetShellType};
+export {ProjectileControl, FireCannon, GetShellType, GetPlayerProjectiles};
