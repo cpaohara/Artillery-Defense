@@ -3,14 +3,17 @@ let ctx = canvas.getContext('2d');
 const gravity = 0.1;
 let activeExplosions = [];  //{x, y, radius(5), alpha}
 let tracerPlots = [];   //{x, y, radius(2), timer(500), alpha, alphaDecrease(0.05)}
-const tracerMax = 20;
+const tracerMax = 1;  //distance between plots
 const explosionSpeed = 2;
 const fadeSpeed = 0.05; //use 0.1??
 let activeProjectiles = []; //{x, y, xspeed, yspeed, termVel, ground, delay(tracer only)}   radius assigned in ctx.arc -> radius = 5
 let shellTypes = ['Kinetic', 'HE', 'AP', 'Tracer']; //HE, AP, kinetic, tracer
-let currentshell = 3;
-const shellData = {kinetic: {speed: 10, tVel: 5}, HE: {speed: 7, tVel: 7}, AP: {speed: 20, tVel: 7}, tracer: {speed: 10, tVel: 5}};
+let currentshell = 0;
+const shellData = {kinetic: {speed: 10, tVel: 5}, HE: {speed: 7, tVel: 7}, AP: {speed: 13, tVel: 7}, tracer: {speed: 10, tVel: 5}};
 //ADD MASS LATER//
+//HE has larger explosion
+//shells have different speeds
+//midair collision
 
 function FireCannon(elevationAngle, barrelLength){
 
@@ -50,7 +53,7 @@ function FireCannon(elevationAngle, barrelLength){
     }
 
     activeProjectiles.push(
-        {shell, x, y, xSpeed, ySpeed, termVel, ground: false, delay: 20} //only tracer uses delay
+        {shell, x, y, xSpeed, ySpeed, termVel, ground: false, delay: 2} //only tracer uses delay
     )
 }
 
@@ -61,9 +64,12 @@ function FireCannon(elevationAngle, barrelLength){
 
 function UpdateProjectiles(){
     for(const projectile of activeProjectiles){
-        if(projectile.y > 395 && projectile.ground == false){
+        if(projectile.y > 395 && projectile.ground == false && projectile.shell != 'tracer'){
             projectile.ground = true;
             activeExplosions.push({x: projectile.x, y: projectile.y, radius: 5, alpha: 1, finished: false});
+        }
+        else if(projectile.y > 395 && projectile.shell == 'tracer'){
+            projectile.ground = true;
         }
 
         projectile.x += projectile.xSpeed;
@@ -71,13 +77,15 @@ function UpdateProjectiles(){
         projectile.ySpeed -= gravity; //Slow vertical speed thru gravity
 
         if(projectile.shell == 'tracer' && projectile.delay <= 0 && projectile.ground == false){
-            tracerPlots.push({x: projectile.x, y: projectile.y, radius: 2, timer: 500, alpha: 1, alphaDecrease: 0.05, finished: false});
+            tracerPlots.push({x: projectile.x, y: projectile.y, radius: 2, timer: 200, alpha: 1, alphaDecrease: 0.05, finished: false});
             projectile.delay = tracerMax;
         }
         else{
             projectile.delay -= 1;
         }
     }
+
+    activeProjectiles = activeProjectiles.filter(proj => !proj.ground);
 }
 
 function DrawProjectiles(){
@@ -100,6 +108,8 @@ function UpdateExplosions(){
             explosion.finished = true;
         }
     }
+
+    activeExplosions = activeExplosions.filter(exp => !exp.finished);
 } 
 
 function DrawExplosions(){
@@ -125,13 +135,18 @@ function UpdateTracers(){
             point.alpha -= point.alphaDecrease
         }
     }
+
+    tracerPlots = tracerPlots.filter(plot => !plot.finished);
 }
 
 function DrawTracers(){
     for(const point of tracerPlots){
-        ctx.fillStyle = `rbga(200, 0, 0, ${point.alpha})`;
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 2, 0, 2*Math.PI);
+        if(point.finished == false){
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(255, 0, 0, ${point.alpha})`;
+            ctx.arc(point.x, point.y, 2, 0, 2*Math.PI);
+            ctx.fill();
+        }
     }
 }
 
@@ -147,5 +162,22 @@ function ProjectileControl(){
     UpdateTracers();
     DrawTracers();
 }
+
+window.addEventListener('keydown', ev => {
+    switch(ev.key){
+        case 'ArrowLeft':
+            currentshell -= 1
+            if(currentshell < 0){
+                currentshell = shellTypes.length - 1;
+            }
+            break;
+        case 'ArrowRight':
+            currentshell += 1;
+            if(currentshell > shellTypes.length - 1){
+                currentshell = 0
+            }
+            break;
+    }
+})
 
 export {ProjectileControl, FireCannon, GetShellType};
