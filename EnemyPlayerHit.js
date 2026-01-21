@@ -16,7 +16,7 @@ function PlayerHitEnemy(){
 
     for(const proj of playerProjectiles){
         for(const enemy of enemies){
-            if(proj.x >= enemy.x && proj.x <= enemy.x + 50 && proj.shell != 'tracer'){  //checks x bounds and shell type
+            if(proj.x >= enemy.x && proj.x <= enemy.x + 50 && proj.shell != 'tracer' && enemy.destroyed == false){  //checks x bounds and shell type
                 xCheck = true;
             }
             if(proj.y <= 400 && proj.y >= 380){  //checks y bounds
@@ -38,6 +38,21 @@ function PlayerHitEnemy(){
 }
 
 function EnemyHitPlayer(){
+    const enemies = GetEnemies();
+    
+    for(const enemy of enemies){
+        if(enemy.x < 90 && enemy.destroyed == false){   //90 is where edge of player base is
+            playerHealth -= 1;
+            enemy.destroyed = true;
+        }
+    }
+
+    if(playerHealth == 0){
+        return true;
+    }
+    else{
+        return false;
+    }
 
 }
 
@@ -54,4 +69,4 @@ function CheckHits(){
 
 }
 
-export {PlayerHitEnemy}
+export {PlayerHitEnemy, EnemyHitPlayer}

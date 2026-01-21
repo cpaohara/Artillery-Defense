@@ -1,10 +1,12 @@
 import {  CannonControl, GetElevation, GetBarrelLength } from "/Cannon.js";
 import { ProjectileControl, FireCannon, GetShellType } from "/Projectiles.js";
 import { EnemyControl, DisplayEnemyHealth } from "./Enemies.js";
-import { PlayerHitEnemy } from "./EnemyPlayerHit.js";
+import { PlayerHitEnemy, EnemyHitPlayer } from "./EnemyPlayerHit.js";
 import { DrawScene, CreateClouds } from "./Environment.js";
 
 //TO DO:
+//different enemy speeds = basic have from 0.8 to 1.2px
+//filter lists of destroyed enemies/ projectiles
 //player health and hitbox
 //enemy health meter (red text underneath enemy)
 //cannon enemy
@@ -29,6 +31,7 @@ const shellSelection = document.getElementById('shellSelection');
 const elevationDisplay = document.getElementById('elevation');
 const playButton = document.getElementById('start');
 let gameLoop = false;
+let lose = false;
 
 //Clouds//
 CreateClouds(100)
@@ -40,11 +43,12 @@ function Frame(){
     
 
     
-    if(gameLoop){
+    if(gameLoop && !lose){
         EnemyControl();
         CannonControl();
         ProjectileControl();
         PlayerHitEnemy();
+        lose = EnemyHitPlayer();
 
         if(cannonCooldown > 0){
             cannonCooldown -= 1;
