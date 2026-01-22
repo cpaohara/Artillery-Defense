@@ -4,12 +4,17 @@
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
 let enemies = []; //{x, y, cannon: bool, strong: bool}
+let enemyProjectiles = [] //{x, y, xspeed, yspeed, termVel, ground}
 const floor = 400;
 let enemyDelay = 0;
 const maxDelay = 400;
 const groundLevel = 380; //constant for all enemies (all have 20px tall rect) & 50px long
 const basicSpeed = 1;
 const cannonSpeed = 0.5;
+const gravity = 0.1
+const termVel = 5;
+const fireAngle = 0;
+const cooldownReset = 100;
 
 function AdvanceEnemies(){
     for(const enemy of enemies){
@@ -64,7 +69,7 @@ function DisplayEnemyHealth(){
             ctx.beginPath();
             ctx.font = 'bold 20px serif';
             ctx.fillStyle = 'white';
-            ctx.fillText(`${enemy.health}`, enemy.x + 21, enemy.y + 40);
+            ctx.fillText(`${enemy.health}`, enemy.x + 21, enemy.y + 50);
         }
     }
 }
@@ -78,7 +83,7 @@ function SpawnEnemy(){
         //1 in 4 chance for cannon enemy
         if(Math.floor(Math.random() * 4) == 1){
             speed = Math.random() * (0.7 - 0.3 + 1) + 0.3; //Random speed between 0.3 & 0.7 px (cannon)
-            enemies.push({x: document.body.clientWidth, y: 370, cannon: true, health: 2, destroyed: false, speed});
+            enemies.push({x: document.body.clientWidth, y: 370, cannon: true, health: 2, destroyed: false, speed, cooldown: cooldownReset});
         }
         else{
             speed = Math.random() * (1.2 - 0.8 + 1) + 0.8; //Random speed between 1.2 & 0.8 px (basic)
@@ -95,6 +100,37 @@ function SpawnEnemy(){
     }
 }
 
+function EnemyFire(angle, fireSpeed){
+    for(const enemy of enemies){
+        if(enemy.cooldown <= 0 && enemy.cannon == true && enemy.destroyed == false){
+            enemyProjectiles.push({x: enemy.x, y: enemy.y, xSpeed: fireSpeed * Math.cos(angle), ySpeed: fireSpeed * Math.sin(angle), termVel, ground: false});
+            enemy.cooldown = cooldownReset
+        }
+        else if(enemy.cannon == true){
+            enemy.cooldown -= 1;
+        }
+        }
+}
+
+function UpdateEnemyProjectiles(){
+    for(const proj of enemyProjectiles){
+        proj.x -= proj.xSpeed;
+        proj.y -= proj.ySpeed;
+        proj.ySpeed -= gravity;
+    }
+}
+
+function DrawEnemyProjectiles(){
+    for(const proj of enemyProjectiles){
+        if(proj.ground == false){
+            ctx.beginPath();
+            ctx.fillStyle = 'gray';
+            ctx.arc(proj.x, proj.y, 5, 0, 2 * Math.PI);
+            ctx.fill();
+            }
+    }
+}
+
 function GetEnemies(){
     return enemies;
 }
@@ -107,6 +143,9 @@ function EnemyControl(){
     SpawnEnemy();
     AdvanceEnemies();
     DrawEnemies();
+    UpdateEnemyProjectiles();
+    DrawEnemyProjectiles();
+    EnemyFire(Math.PI / 4, 10);
 }
 
 export {EnemyControl, GetEnemies, GetEnemyProjectiles, DisplayEnemyHealth};

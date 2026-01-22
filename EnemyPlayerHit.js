@@ -17,7 +17,7 @@ function PlayerHitEnemy(){
 
     for(const proj of playerProjectiles){
         for(const enemy of enemies){
-            if(proj.x >= enemy.x && proj.x <= enemy.x + 50 && proj.shell != 'tracer' && enemy.destroyed == false){  //checks x bounds and shell type 50pc width
+            if(proj.x >= enemy.x && proj.x <= enemy.x + 50 && proj.shell != 'tracer' && enemy.destroyed == false){  //checks x bounds and shell type 50px width
                 xCheck = true;
             }
             if(proj.y <= 400 && proj.y >= enemy.y){  //checks y bounds 30px height
@@ -26,10 +26,11 @@ function PlayerHitEnemy(){
             if(xCheck && yCheck){
                 enemy.health -= 1;
                 proj.ground = true;
-            }
-            if(enemy.health == 0){
-                enemy.destroyed = true;
-                score += 1
+
+                if(enemy.health == 0){
+                    score += (enemy.cannon) ? 2 : 1;
+                    enemy.destroyed = true;
+                }
             }
             xCheck = false;
             yCheck = false;
@@ -51,7 +52,7 @@ function EnemyHitPlayer(){
         }
     }
 
-    enemies = enemies.filter(enemy => enemy.destroyed);
+    enemies = enemies.filter(enemy => !enemy.destroyed);
 
     if(playerHealth == 0){
         return true;
@@ -61,6 +62,13 @@ function EnemyHitPlayer(){
     }
 
 
+}
+
+function DisplayScore(){
+    ctx.beginPath();
+    ctx.fillStyle = 'black';
+    ctx.font = 'bold 25px serif'
+    ctx.fillText(`Score: ${score}`, 10, 30);
 }
 
 function CheckLose(){
@@ -80,4 +88,4 @@ function GetPlayerHealth(){
     return playerHealth;
 }
 
-export {PlayerHitEnemy, EnemyHitPlayer, GetPlayerHealth}
+export {PlayerHitEnemy, EnemyHitPlayer, GetPlayerHealth, DisplayScore}

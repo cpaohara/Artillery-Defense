@@ -1,0 +1,15 @@
+
+steps:
+1. work out distance from enemy to start of x range
+2. add on random x range
+3. work out position of peak of arc:
+- make fake ground level at top of barrel where projectile is spawned
+- use suvat to figure out x ()
+- take from distance to figure out position of peak
+4. use height and x value to work out angle of shot
+5. split speed into x and y components
+6. spawn projectile with that data
+
+speed zones (and angle range):
+1. find out what zone enemy is in
+2. 

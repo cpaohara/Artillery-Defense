@@ -1,23 +1,16 @@
 import { CannonControl, GetElevation, GetBarrelLength, DisplayPlayerHealth } from "/Cannon.js";
 import { ProjectileControl, FireCannon, GetShellType } from "/Projectiles.js";
 import { EnemyControl, DisplayEnemyHealth } from "./Enemies.js";
-import { PlayerHitEnemy, EnemyHitPlayer } from "./EnemyPlayerHit.js";
+import { PlayerHitEnemy, EnemyHitPlayer, DisplayScore } from "./EnemyPlayerHit.js";
 import { DrawScene, CreateClouds } from "./Environment.js";
 
 //TO DO:
-//different enemy speeds = basic have from 0.8 to 1.2px //
-//filter lists of destroyed enemies/ projectiles //?
-//player health and hitbox //
-//enemy health meter (red text underneath enemy) //
-//cannon enemy
-//better basic enemies -> thin trapezium on top (dark grey??), also means all vehicles have same size hitbox (50 across, 30 tall) //
-//change shell names //
+//cannon enemy (player hitbox)
 //Point system -> display top left
 //list of controls
 //pause -> p (also show leaderboard)
 //json leaderboard
 //cluster shell (every 20 points??) -> fire up and detonate in middar with key (c? [for cluster obvs])
-//better looking enemies //
 //let player press multiple
 //separate reload speeds
 //special types for shells
@@ -106,6 +99,8 @@ function Frame(){
         DisplayPlayerHealth();
     }
     
+    DisplayScore();
+
     requestAnimationFrame(Frame);
 }
 
