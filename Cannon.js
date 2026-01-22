@@ -10,6 +10,8 @@
 // AP (armour piercing) - goes though multiple units. faster and heavier so difficult to arc
 // tracer - no damage but plots journey of shell. aid with aiming. has same speed and weight as kinetic shell
 
+import {GetPlayerHealth} from './EnemyPlayerHit.js';
+
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
 let elevationAngle = Math.PI / 4;
@@ -39,13 +41,8 @@ function UpdateElevation(){
 
 
 function DrawCannon(){
-    ctx.beginPath();
-    ctx.fillStyle = 'black';
-    ctx.fillRect(10, 380, 80, 20);
-    ctx.arc(50, 380, 30, 0, Math.PI, true);
-    ctx.fill();
-
     ctx.save();
+    ctx.strokeStyle = 'rgb(100, 100, 100)'
     ctx.translate(50, 380);
     ctx.rotate(2*Math.PI - elevationAngle);
     ctx.beginPath();
@@ -53,13 +50,21 @@ function DrawCannon(){
     ctx.lineWidth = 5;
     ctx.lineTo(barrelLength, 0);
     ctx.stroke();
+    ctx.strokeStyle = 'rgb(60, 60, 60)';
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineWidth = 10;
     ctx.lineTo(secondBarrel, 0);
     ctx.stroke();
     ctx.restore();
+
+    ctx.beginPath();
+    ctx.fillStyle = 'black';
+    ctx.fillRect(10, 380, 80, 20);
+    ctx.arc(50, 380, 30, 0, Math.PI, true);
+    ctx.fill();
 }
+
 
 function GetElevation(){
     return elevationAngle;
@@ -74,12 +79,21 @@ function CannonControl(){
     DrawCannon();
 }
 
+function DisplayPlayerHealth(){
+    ctx.beginPath();
+    ctx.font = 'bold 20px serif';
+    ctx.fillStyle = 'white';
+    ctx.fillText(GetPlayerHealth(), 50, 420);
+}
+
 window.addEventListener('keydown', ev =>{
     switch(ev.key){
         case 'ArrowUp':
+        case 'w':
             up = true;
             break;
         case 'ArrowDown':
+        case 's':
             down = true;
             break;
     }
@@ -88,15 +102,17 @@ window.addEventListener('keydown', ev =>{
 window.addEventListener('keyup', ev =>{
     switch(ev.key){
         case 'ArrowUp':
+        case 'w':
             up= false;
             break;
         case 'ArrowDown':
+        case 's':
             down = false;
             break;
     }
 })
 
-export {UpdateElevation, DrawCannon,  CannonControl, GetElevation, GetBarrelLength};
+export {UpdateElevation, DrawCannon,  CannonControl, GetElevation, GetBarrelLength, DisplayPlayerHealth};
 
 
 // ctx.save

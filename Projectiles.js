@@ -7,8 +7,8 @@ const tracerMax = 1;  //distance between plots
 const explosionSpeed = 2;
 const fadeSpeed = 0.05; //use 0.1??
 let activeProjectiles = []; //{x, y, xspeed, yspeed, termVel, ground, delay(tracer only)}   radius assigned in ctx.arc -> radius = 5
-let shellTypes = ['Kinetic', 'HE', 'AP', 'Tracer']; //HE, AP, kinetic, tracer
-let currentshell = 0;
+let shellTypes = ['HE', 'Kinetic', 'Tracer', 'AP']; //HE, AP, kinetic, tracer
+let currentshell = 1;
 const shellData = {kinetic: {speed: 10, tVel: 5}, HE: {speed: 7, tVel: 7}, AP: {speed: 13, tVel: 7}, tracer: {speed: 10, tVel: 5}};
 //ADD MASS LATER//
 //HE has larger explosion
@@ -173,12 +173,14 @@ function ProjectileControl(){
 window.addEventListener('keydown', ev => {
     switch(ev.key){
         case 'ArrowLeft':
+        case 'q':
             currentshell -= 1
             if(currentshell < 0){
                 currentshell = shellTypes.length - 1;
             }
             break;
         case 'ArrowRight':
+        case 'e':
             currentshell += 1;
             if(currentshell > shellTypes.length - 1){
                 currentshell = 0
