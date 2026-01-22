@@ -1,5 +1,5 @@
 
-import { GetEnemies } from "./Enemies.js";
+import { GetEnemies, GetEnemyProjectiles } from "./Enemies.js";
 import { GetPlayerProjectiles } from "./Projectiles.js";
 
 
@@ -44,6 +44,7 @@ function PlayerHitEnemy(){
 
 function EnemyHitPlayer(){
     let enemies = GetEnemies();
+    let enemyProjectiles = GetEnemyProjectiles();
     
     for(const enemy of enemies){
         if(enemy.x < 90 && enemy.destroyed == false){   //90 is where edge of player base is
@@ -52,7 +53,15 @@ function EnemyHitPlayer(){
         }
     }
 
+    for(const proj of enemyProjectiles){
+        if(proj.x < 80 && proj.x > 10 && proj.y < 400 && proj.y > 350 && proj.ground == false){//10 -> 80 x    350 -> 400 y
+            playerHealth -= 1;
+            proj.ground = true;
+        }
+    }
+
     enemies = enemies.filter(enemy => !enemy.destroyed);
+    enemyProjectiles = enemyProjectiles.filter(proj => !proj.ground);
 
     if(playerHealth == 0){
         return true;

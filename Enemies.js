@@ -5,6 +5,7 @@ const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
 let enemies = []; //{x, y, cannon: bool, strong: bool}
 let enemyProjectiles = [] //{x, y, xspeed, yspeed, termVel, ground}
+let enemyExplosions = [];
 const floor = 400;
 let enemyDelay = 0;
 const maxDelay = 400;
@@ -14,7 +15,9 @@ const cannonSpeed = 0.5;
 const gravity = 0.1
 const termVel = 5;
 const fireAngle = 0;
-const cooldownReset = 100;
+const cooldownReset = 300;
+const explosionSpeed = 2;
+const fadeSpeed = 0.05; //use 0.1??
 
 function AdvanceEnemies(){
     for(const enemy of enemies){
@@ -117,7 +120,16 @@ function UpdateEnemyProjectiles(){
         proj.x -= proj.xSpeed;
         proj.y -= proj.ySpeed;
         proj.ySpeed -= gravity;
+
+        if(proj.y > 400){
+            proj.ground = true;
+        }
+
+        if(proj.ground){
+            enemyExplosions.push({x: proj.x, y: proj.y, radius: 5, alpha: 1, finished: false})
+        }
     }
+    enemyExplosions = enemyExplosions.filter(exp => !exp.finished);
 }
 
 function DrawEnemyProjectiles(){
@@ -131,12 +143,38 @@ function DrawEnemyProjectiles(){
     }
 }
 
+function UpdateEnemyExplosions(){
+    for(const explosion of enemyExplosions){
+        explosion.alpha -= fadeSpeed;
+        explosion.radius += explosionSpeed;
+
+        if(explosion.alpha <= 0){
+            explosion.finished = true;
+        }
+    }
+
+    enemyExplosions = enemyExplosions.filter(exp => !exp.finished);
+} 
+
+function DrawEnemyExplosions(){
+    for(const explosion of enemyExplosions){
+        console.log(explosion)
+        if(explosion.finished == false){
+            console.log('explosion')
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(255, 165, 0, ${explosion.alpha})`;
+            ctx.arc(explosion.x, explosion.y, explosion.radius, 0, 2*Math.PI);
+            ctx.fill();
+        }
+    }
+}
+
 function GetEnemies(){
     return enemies;
 }
 
 function GetEnemyProjectiles(){
-
+    return enemyProjectiles;
 }
 
 function EnemyControl(){
@@ -145,6 +183,8 @@ function EnemyControl(){
     DrawEnemies();
     UpdateEnemyProjectiles();
     DrawEnemyProjectiles();
+    UpdateEnemyExplosions();
+    DrawEnemyExplosions();
     EnemyFire(Math.PI / 4, 10);
 }
 

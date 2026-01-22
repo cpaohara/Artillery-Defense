@@ -5,15 +5,13 @@ import { PlayerHitEnemy, EnemyHitPlayer, DisplayScore } from "./EnemyPlayerHit.j
 import { DrawScene, CreateClouds } from "./Environment.js";
 
 //TO DO:
-//cannon enemy (player hitbox)
-//Point system -> display top left
+//random fire angle for cannons?
 //list of controls
 //pause -> p (also show leaderboard)
 //json leaderboard
 //cluster shell (every 20 points??) -> fire up and detonate in middar with key (c? [for cluster obvs])
 //let player press multiple
 //separate reload speeds
-//special types for shells
 
 //Context and Canvas//
 const canvas = document.getElementById('screen');

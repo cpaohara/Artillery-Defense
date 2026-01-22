@@ -42,7 +42,7 @@ function UpdateElevation(){
 
 function DrawCannon(){
     ctx.save();
-    ctx.strokeStyle = 'rgb(100, 100, 100)'
+    ctx.strokeStyle = 'rgb(100, 100, 100)'  //barrels
     ctx.translate(50, 380);
     ctx.rotate(2*Math.PI - elevationAngle);
     ctx.beginPath();
@@ -59,9 +59,9 @@ function DrawCannon(){
     ctx.restore();
 
     ctx.beginPath();
-    ctx.fillStyle = 'black';
-    ctx.fillRect(10, 380, 80, 20);
-    ctx.arc(50, 380, 30, 0, Math.PI, true);
+    ctx.fillStyle = 'black';    //10 -> 80 x    350 -> 400 y
+    ctx.fillRect(10, 380, 80, 20);  //base
+    ctx.arc(50, 380, 30, 0, Math.PI, true); //turret arc
     ctx.fill();
 }
 
