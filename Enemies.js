@@ -46,9 +46,10 @@ function DrawEnemies(){
             ctx.save();
             ctx.translate(enemy.x + 25, enemy.y + 20);
             ctx.moveTo(0, 0);
+            ctx.rotate(Math.PI + enemy.angle);
             ctx.strokeStyle = 'rgb(50, 50, 50)';
             ctx.lineWidth = 5;
-            ctx.lineTo(-35, -10);
+            ctx.lineTo(35, 0);
             ctx.stroke();
             ctx.restore();
 
@@ -81,12 +82,12 @@ function SpawnEnemy(){
     let speed;
 
     if(enemyDelay <= 0){
-        enemyDelay = maxDelay;
+        enemyDelay = Math.floor(Math.random() * (400 - 200 + 1) + 200); //200-400 delay
 
         //1 in 4 chance for cannon enemy
         if(Math.floor(Math.random() * 4) == 1){
             speed = Math.random() * (0.7 - 0.3 + 1) + 0.3; //Random speed between 0.3 & 0.7 px (cannon)
-            enemies.push({x: document.body.clientWidth, y: 370, cannon: true, health: 2, destroyed: false, speed, cooldown: cooldownReset});
+            enemies.push({x: document.body.clientWidth, y: 370, cannon: true, health: 2, destroyed: false, speed, cooldown: cooldownReset, angle: 0.1});
         }
         else{
             speed = Math.random() * (1.2 - 0.8 + 1) + 0.8; //Random speed between 1.2 & 0.8 px (basic)
@@ -106,6 +107,7 @@ function SpawnEnemy(){
 function EnemyFire(angle, fireSpeed){
     for(const enemy of enemies){
         if(enemy.cooldown <= 0 && enemy.cannon == true && enemy.destroyed == false){
+            enemy.angle = angle;
             enemyProjectiles.push({x: enemy.x, y: enemy.y, xSpeed: fireSpeed * Math.cos(angle), ySpeed: fireSpeed * Math.sin(angle), termVel, ground: false});
             enemy.cooldown = cooldownReset
         }
@@ -185,7 +187,8 @@ function EnemyControl(){
     DrawEnemyProjectiles();
     UpdateEnemyExplosions();
     DrawEnemyExplosions();
-    EnemyFire(Math.PI / 4, 10);
+    let angle = Math.random() * (0.7 - 0.17 + 1) + 0.17; 
+    EnemyFire(angle, 10);
 }
 
 export {EnemyControl, GetEnemies, GetEnemyProjectiles, DisplayEnemyHealth};

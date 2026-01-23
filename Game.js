@@ -6,10 +6,6 @@ import { DrawScene, CreateClouds } from "./Environment.js";
 
 //TO DO:
 //random fire angle for cannons?
-//list of controls
-//pause -> p (also show leaderboard)
-//json leaderboard
-//cluster shell (every 20 points??) -> fire up and detonate in middar with key (c? [for cluster obvs])
 //let player press multiple
 //separate reload speeds
 
@@ -25,6 +21,7 @@ const cooldownDisplay = document.getElementById('cooldown');
 const shellSelection = document.getElementById('shellSelection');
 const elevationDisplay = document.getElementById('elevation');
 const playButton = document.getElementById('start');
+const resetButton = document.getElementById('refresh');
 let gameLoop = false;
 let lose = false;
 const cloudCover = Math.floor(Math.random() * (250 - 50 + 1) + 50)
@@ -35,28 +32,6 @@ CreateClouds(cloudCover) //cloudy sky: 400 regular sky: 100
 function Frame(){
     
     ctx.reset();
-
-    // ctx.beginPath();
-    // ctx.save();
-    // ctx.translate(325, 390);
-    // ctx.moveTo(0, 0);
-    // ctx.strokeStyle = 'rgb(50, 50, 50)';
-    // ctx.lineWidth = 5;
-    // ctx.lineTo(-35, -10);
-    // ctx.stroke();
-    // ctx.restore();
-
-    // ctx.beginPath();
-    // ctx.fillStyle = 'darkgrey';
-    // ctx.save();
-    // ctx.translate(300, 390)
-    // ctx.moveTo(0, 0);
-    // ctx.fillRect(0, 0, 50, 10);
-    // ctx.arc(25, 0, 20, 0, Math.PI, true);
-    // ctx.fill();
-    // ctx.restore();
-    
-
 
     if(gameLoop && !lose){
         EnemyControl();
@@ -97,6 +72,17 @@ function Frame(){
         DisplayPlayerHealth();
     }
     
+    if(!gameLoop){
+        ctx.beginPath();
+        ctx.font = 'bold 40px serif';
+        ctx.fillStyle = 'black'
+        ctx.fillText('Controls:', 10, 100);
+        ctx.fillText('Elevation: [Up/Down] [a/d]', 10, 150);
+        ctx.fillText('Cycle shells: [Left/Right] [q/e]', 10, 200);
+        ctx.fillText('Fire Shell: [space]', 10, 250)
+
+    }
+
     DisplayScore();
 
     requestAnimationFrame(Frame);
@@ -114,5 +100,6 @@ window.addEventListener('keydown', ev =>{
 })
 
 playButton.addEventListener('click', () => {gameLoop = true});
+resetButton.addEventListener('click', () => {window.location.reload()});
 
 requestAnimationFrame(Frame);
