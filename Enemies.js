@@ -16,7 +16,7 @@ const gravity = 0.1
 const termVel = 5;
 const cooldownReset = 300;
 const explosionSpeed = 2;
-const fadeSpeed = 0.05; //use 0.1??
+const fadeSpeed = 0.05;
 
 function AdvanceEnemies(){
     for(const enemy of enemies){
@@ -81,7 +81,7 @@ function SpawnEnemy(){
     let speed;
 
     if(enemyDelay <= 0){
-        enemyDelay = Math.floor(Math.random() * (400 - 200 + 1) + 200); //200-400 delay
+        enemyDelay = Math.floor(Math.random() * (300 - 200 + 1) + 200); //spawn rate of enemies (between 200 and 300)
 
         //1 in 3 chance for cannon enemy
         if(Math.floor(Math.random() * 3) == 1){

@@ -4,11 +4,6 @@ import { EnemyControl, DisplayEnemyHealth } from "./Enemies.js";
 import { PlayerHitEnemy, EnemyHitPlayer, DisplayScore } from "./EnemyPlayerHit.js";
 import { DrawScene, CreateClouds } from "./Environment.js";
 
-//TO DO:
-//random fire angle for cannons?
-//let player press multiple
-//separate reload speeds
-
 //Context and Canvas//
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
@@ -27,7 +22,7 @@ let lose = false;
 const cloudCover = Math.floor(Math.random() * (250 - 50 + 1) + 50)
 
 //Clouds//
-CreateClouds(cloudCover) //cloudy sky: 400 regular sky: 100
+CreateClouds(cloudCover)
 
 function Frame(){
     
@@ -67,17 +62,18 @@ function Frame(){
 
     //Environment//
     DrawScene();
+    
     if(gameLoop && !lose){
         DisplayEnemyHealth();
         DisplayPlayerHealth();
     }
     
-    if(!gameLoop){
+    if(!gameLoop){  //controls
         ctx.beginPath();
         ctx.font = 'bold 40px serif';
         ctx.fillStyle = 'black'
         ctx.fillText('Controls:', 10, 100);
-        ctx.fillText('Elevation: [Up/Down] [a/d]', 10, 150);
+        ctx.fillText('Elevation: [Up/Down] [w/s]', 10, 150);
         ctx.fillText('Cycle shells: [Left/Right] [q/e]', 10, 200);
         ctx.fillText('Fire Shell: [space]', 10, 250)
 

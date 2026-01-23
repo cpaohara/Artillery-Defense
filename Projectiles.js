@@ -10,10 +10,7 @@ let activeProjectiles = []; //{x, y, xspeed, yspeed, termVel, ground, delay(trac
 let shellTypes = ['HE', 'Kinetic', 'Tracer', 'AP']; //HE, AP, kinetic, tracer
 let currentshell = 1;
 const shellData = {kinetic: {speed: 10, tVel: 5}, HE: {speed: 7, tVel: 7}, AP: {speed: 13, tVel: 7}, tracer: {speed: 10, tVel: 5}};
-//ADD MASS LATER//
-//HE has larger explosion
-//shells have different speeds
-//midair collision
+
 
 function FireCannon(elevationAngle, barrelLength){
 
