@@ -1,3 +1,11 @@
+
+// this file handles the player's projectiles and explosions
+// the projectiles use the elevation angle with trigonometry to work out the horizontal and vertical speed of the shell
+// this speed is then applied to the coordinates of the shell each animation frame, and gravity also is applied to the vertical speed
+// the explosions are made when the shell hits something, and is an expanding and fading orange circle
+
+
+
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
 const gravity = 0.1;

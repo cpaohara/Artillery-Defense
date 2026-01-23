@@ -2,6 +2,9 @@
 import { GetEnemies, GetEnemyProjectiles } from "./Enemies.js";
 import { GetPlayerProjectiles } from "./Projectiles.js";
 
+// this file handles the hitboxes and collisions for both the player and enemies
+// the centres of the projectiles are checked to see if they fall in the range of the x and coordinates of enemies and the player to detect if they hit
+// the player health is also stored and altered here
 
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
@@ -23,7 +26,7 @@ function PlayerHitEnemy(){
             if(proj.y <= 400 && proj.y >= enemy.y){  //checks y bounds 30px height
                 yCheck = true;
             }
-            if(xCheck && yCheck){
+            if(xCheck && yCheck){ //if proj is within x and y range
                 enemy.health -= 1;
                 proj.ground = true;
 
@@ -46,14 +49,14 @@ function EnemyHitPlayer(){
     let enemies = GetEnemies();
     let enemyProjectiles = GetEnemyProjectiles();
     
-    for(const enemy of enemies){
+    for(const enemy of enemies){ //enemy reaching player
         if(enemy.x < 90 && enemy.destroyed == false){   //90 is where edge of player base is
             playerHealth -= 1;
             enemy.destroyed = true;
         }
     }
 
-    for(const proj of enemyProjectiles){
+    for(const proj of enemyProjectiles){ //projectiles from enemy tanks/cannons
         if(proj.x < 80 && proj.x > 10 && proj.y < 400 && proj.y > 350 && proj.ground == false){//10 -> 80 x    350 -> 400 y
             playerHealth -= 1;
             proj.ground = true;
@@ -64,10 +67,10 @@ function EnemyHitPlayer(){
     enemyProjectiles = enemyProjectiles.filter(proj => !proj.ground);
 
     if(playerHealth == 0){
-        return true;
+        return true; //player loses
     }
     else{
-        return false;
+        return false; //not player loss (yet)
     }
 
 
@@ -87,10 +90,6 @@ function CheckLose(){
     else{
         return false
     }
-}
-
-function CheckHits(){
-
 }
 
 function GetPlayerHealth(){

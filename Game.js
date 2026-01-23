@@ -4,6 +4,17 @@ import { EnemyControl, DisplayEnemyHealth } from "./Enemies.js";
 import { PlayerHitEnemy, EnemyHitPlayer, DisplayScore } from "./EnemyPlayerHit.js";
 import { DrawScene, CreateClouds } from "./Environment.js";
 
+
+//What the game is:
+// The player controls a cannon to shoot to incoming enemies using projectiles affected by gravity.
+// There are different shell types that the player can choose from and can also change the elevation of the turret
+// Each file will have a commented section explaining how they work
+
+
+//The game file:
+// This file imports all other files and uses their functions to create the game loop using animation frames
+
+
 //Context and Canvas//
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
@@ -68,7 +79,7 @@ function Frame(){
         DisplayPlayerHealth();
     }
     
-    if(!gameLoop){  //controls
+    if(!gameLoop){  //controls list
         ctx.beginPath();
         ctx.font = 'bold 40px serif';
         ctx.fillStyle = 'black'
@@ -84,7 +95,7 @@ function Frame(){
     requestAnimationFrame(Frame);
 }
 
-window.addEventListener('keydown', ev =>{
+window.addEventListener('keydown', ev =>{   //fire cannon
     switch(ev.key){
         case ' ':
             if(cannonCooldown == 0){
@@ -95,7 +106,7 @@ window.addEventListener('keydown', ev =>{
     }
 })
 
-playButton.addEventListener('click', () => {gameLoop = true});
-resetButton.addEventListener('click', () => {window.location.reload()});
+playButton.addEventListener('click', () => {gameLoop = true}); //start
+resetButton.addEventListener('click', () => {window.location.reload()}); //reset
 
 requestAnimationFrame(Frame);

@@ -1,8 +1,9 @@
-// The player will control an artillery cannon, where they need to fire at enemies that
-// slowly approach the player from the right (tanks, planes, etc)
-// Explosion = decreasing alpha and increasing radius
-// Player can cycle through different shells to (long range, short range, AP, HE, tracer [shows arc of shell and fades after few seconds])
-// Enemies could fire back? (random angle within range [further away, large range])
+
+//The cannon file:
+// this file is for drawing the cannon and controlling the barrel elevation
+// the player can press the up/down keys and this increases and decreases the variable elevationAngle, which is the angle in radians
+// the elevation is bound between 1.22 and 0.17 radians (roughly 70 and 10 degrees)
+// the file also imports and displays the player health from EnemyPlayerHit.js
 
 // Shell types:
 // kinetic - regular shell
@@ -44,7 +45,7 @@ function DrawCannon(){
     ctx.save();
     ctx.strokeStyle = 'rgb(100, 100, 100)'  //barrels
     ctx.translate(50, 380);
-    ctx.rotate(2*Math.PI - elevationAngle);
+    ctx.rotate(2*Math.PI - elevationAngle); // minus elevation from 360deg to make it appear in the correct spot
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineWidth = 5;
@@ -59,7 +60,7 @@ function DrawCannon(){
     ctx.restore();
 
     ctx.beginPath();
-    ctx.fillStyle = 'black';    //10 -> 80 x    350 -> 400 y
+    ctx.fillStyle = 'black';    //10 -> 80 x    350 -> 400 y (hitbox of the cannon)
     ctx.fillRect(10, 380, 80, 20);  //base
     ctx.arc(50, 380, 30, 0, Math.PI, true); //turret arc
     ctx.fill();

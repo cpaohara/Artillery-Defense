@@ -1,4 +1,8 @@
 
+// this file only draws the clouds and grass for the game
+// the clouds are randomly sized and places across the screen, so there are different clouds each time the player resets the game
+
+
 const canvas = document.getElementById('screen');
 let ctx = canvas.getContext('2d');
 let clouds = [] //{x, y, radius}
@@ -13,7 +17,6 @@ function CreateClouds(amount){
     for(let i = 0; i < amount; i++){
         clouds.push({x: Math.floor(Math.random() * (document.body.clientWidth - 0 + 1)) + 0, y: Math.floor(Math.random() * (300 - 10 + 1)) + 10, radius: Math.floor(Math.random() * (40 - 10 + 1)) + 10})
     }
-    //Math.floor(Math.random() * (20 - 10 + 1)) + 10
 }
 
 function DrawClouds(){

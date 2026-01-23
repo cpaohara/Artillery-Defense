@@ -1,4 +1,7 @@
 
+// this file handlles the enemy spawning, moving and projectiles and explosions
+// the projectiles and explosions work in the same way the player's do, except the angle is randomly chosen
+// the enemies spawn at the edge of the screen, and move across slowly, their goal to reach the player, and some to shoot at them as well
 
 
 const canvas = document.getElementById('screen');
