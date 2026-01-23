@@ -14,7 +14,6 @@ const basicSpeed = 1;
 const cannonSpeed = 0.5;
 const gravity = 0.1
 const termVel = 5;
-const fireAngle = 0;
 const cooldownReset = 300;
 const explosionSpeed = 2;
 const fadeSpeed = 0.05; //use 0.1??
@@ -84,8 +83,8 @@ function SpawnEnemy(){
     if(enemyDelay <= 0){
         enemyDelay = Math.floor(Math.random() * (400 - 200 + 1) + 200); //200-400 delay
 
-        //1 in 4 chance for cannon enemy
-        if(Math.floor(Math.random() * 4) == 1){
+        //1 in 3 chance for cannon enemy
+        if(Math.floor(Math.random() * 3) == 1){
             speed = Math.random() * (0.7 - 0.3 + 1) + 0.3; //Random speed between 0.3 & 0.7 px (cannon)
             enemies.push({x: document.body.clientWidth, y: 370, cannon: true, health: 2, destroyed: false, speed, cooldown: cooldownReset, angle: 0.1});
         }
@@ -104,11 +103,11 @@ function SpawnEnemy(){
     }
 }
 
-function EnemyFire(angle, fireSpeed){
+function EnemyFire(fireangle, fireSpeed){
     for(const enemy of enemies){
         if(enemy.cooldown <= 0 && enemy.cannon == true && enemy.destroyed == false){
-            enemy.angle = angle;
-            enemyProjectiles.push({x: enemy.x, y: enemy.y, xSpeed: fireSpeed * Math.cos(angle), ySpeed: fireSpeed * Math.sin(angle), termVel, ground: false});
+            enemy.angle = fireangle;
+            enemyProjectiles.push({x: enemy.x, y: enemy.y, xSpeed: fireSpeed * Math.cos(enemy.angle), ySpeed: fireSpeed * Math.sin(enemy.angle), termVel, ground: false});
             enemy.cooldown = cooldownReset
         }
         else if(enemy.cannon == true){
@@ -160,9 +159,7 @@ function UpdateEnemyExplosions(){
 
 function DrawEnemyExplosions(){
     for(const explosion of enemyExplosions){
-        console.log(explosion)
         if(explosion.finished == false){
-            console.log('explosion')
             ctx.beginPath();
             ctx.fillStyle = `rgba(255, 165, 0, ${explosion.alpha})`;
             ctx.arc(explosion.x, explosion.y, explosion.radius, 0, 2*Math.PI);
@@ -187,7 +184,7 @@ function EnemyControl(){
     DrawEnemyProjectiles();
     UpdateEnemyExplosions();
     DrawEnemyExplosions();
-    let angle = Math.random() * (0.7 - 0.17 + 1) + 0.17; 
+    let angle = Math.random() * (1.22 - 0.17) + 0.17;
     EnemyFire(angle, 10);
 }
 
